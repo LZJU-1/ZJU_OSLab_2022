@@ -43,8 +43,6 @@ _traps:
     csrr a1, sepc
     jal x1, trap_handler
 
-    # -----------
-
     # 3. restore sepc and 32 registers (x2(sp) should be restore last) from stack
     ld t0, 248(sp)
     csrw sepc, t0
@@ -80,6 +78,7 @@ _traps:
     ld x31, 240(sp)
     ld x2, 8(sp)
     addi sp, sp, 256
+
     # 4. return from trap
     sret
-    # -----------
+

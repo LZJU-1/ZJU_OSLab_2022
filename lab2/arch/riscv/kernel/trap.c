@@ -8,7 +8,6 @@ void trap_handler(unsigned long scause, unsigned long sepc) {
         scause = scause - interrupt_sig;
         unsigned long timer_int = 0x5;
         if (!(scause ^ timer_int)){ // it's Supervisor timer interrupt
-            printk("kernel is running!\n");
             printk("[S] Supervisor Mode Timer Interrupt\n");
             clock_set_next_event();
         }

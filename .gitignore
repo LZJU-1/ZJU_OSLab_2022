@@ -1,1 +1,5 @@
 **.vscode
+*.o
+**vmlinux
+**System.map
+**Image

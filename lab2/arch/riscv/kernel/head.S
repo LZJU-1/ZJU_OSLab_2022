@@ -10,9 +10,6 @@ _start:
     la t0, _traps
     csrw stvec, t0
 
-    # set first time interrupt
-    jal ra, clock_set_next_event
-
     # set on STIE bit of sie
     csrr t0, sie
     ori t0, t0, 0x20
@@ -22,6 +19,9 @@ _start:
     csrr t0, sstatus
     ori t0, t0, 0x2
     csrw sstatus, t0
+
+    # set first time interrupt
+    jal ra, clock_set_next_event
 
     jal x0, start_kernel  # jump to start_kernel
 
