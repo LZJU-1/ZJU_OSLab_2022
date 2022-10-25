@@ -21,10 +21,12 @@ all:
 run: all
 	@echo Launch the qemu ......
 	@qemu-system-riscv64 -nographic -machine virt -kernel vmlinux -bios default 
+	${MAKE} clean
 
 debug: all
 	@echo Launch the qemu for debug ......
 	@qemu-system-riscv64 -nographic -machine virt -kernel vmlinux -bios default -S -s
+	${MAKE} clean
 
 clean:
 	${MAKE} -C lib clean

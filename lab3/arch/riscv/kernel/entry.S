@@ -82,3 +82,49 @@ _traps:
     # 4. return from trap
     sret
 
+    .extern dummy
+    .globl __dummy
+__dummy:
+    la t0, dummy
+    csrw sepc, t0
+    sret
+    #jalr t0
+
+    .globl __switch_to
+__switch_to:
+    # save state to prev process
+    # including ra, sp, s0-s11
+    add t0, a0, 40  # offset of thread_struct in current task_struct
+    sd ra, 0(t0)
+    sd sp, 8(t0)
+    sd s0, 16(t0)
+    sd s1, 24(t0)
+    sd s2, 32(t0)
+    sd s3, 40(t0)
+    sd s4, 48(t0)
+    sd s5, 56(t0)
+    sd s6, 64(t0)
+    sd s7, 72(t0)
+    sd s8, 80(t0)
+    sd s9, 88(t0)
+    sd s10, 96(t0)
+    sd s11, 104(t0)
+
+    # restore state from next process
+    add t0, a1, 40  # offset of thread_struct in next task_struct
+    ld ra, 0(t0)
+    ld sp, 8(t0)
+    ld s0, 16(t0)
+    ld s1, 24(t0)
+    ld s2, 32(t0)
+    ld s3, 40(t0)
+    ld s4, 48(t0)
+    ld s5, 56(t0)
+    ld s6, 64(t0)
+    ld s7, 72(t0)
+    ld s8, 80(t0)
+    ld s9, 88(t0)
+    ld s10, 96(t0)
+    ld s11, 104(t0)
+
+    ret
