@@ -9,7 +9,6 @@ void trap_handler(uint64 scause, uint64 sepc) {
         scause = scause - interrupt_sig;
         unsigned long timer_int = 0x5;
         if (!(scause ^ timer_int)){ // it's Supervisor timer interrupt
-            printk("[S] Supervisor Mode Timer Interrupt\n");
             clock_set_next_event();
             do_timer();
         }

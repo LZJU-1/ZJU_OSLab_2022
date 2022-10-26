@@ -5,7 +5,8 @@
 extern struct task_struct* task[NR_TASKS];
 
 void test() {
-    printk("In test().\n");
+    printk("idle process is running!\n");
+    while(1) {}
     // switch_to(task[1]);
     // size_t print_loop = 0;
     // while (1) {

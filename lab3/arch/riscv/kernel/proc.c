@@ -3,7 +3,6 @@
 #include "rand.h"
 #include "printk.h"
 #include "defs.h"
-#include "math.h"
 
 extern void __dummy();
 
@@ -81,45 +80,67 @@ void do_timer(void) {
     }
 }
 
-#define DSJF
+// #define DSJF
 #ifdef DSJF 
 void schedule(void){
     uint64 min_count = INF;
     struct task_struct* next = NULL;
     char all_zeros = 1;
     for(int i = 1; i < NR_TASKS; i++){
-        if (task[i]->state == TASK_RUNNING) {
-            if (task[i]->counter > 0) {
-                min_count = min(task[i]->counter, min_count);
-                next = task[i];
-                all_zeros = 0;
-            }
-            else {
-                min_count = 0;
+        if (task[i]->state == TASK_RUNNING && task[i]->counter > 0) {
+            if (task[i]->counter < min_count) {
+                min_count = task[i]->counter;
                 next = task[i];
             }
+            all_zeros = 0;
         }
     }
 
     if (all_zeros) {
+        printk("\n");
         for(int i = 1; i < NR_TASKS; i++){
             task[i]->counter = rand() % 10 + 1;
             printk("SET [PID = %d COUNTER = %d]\n", task[i]->pid, task[i]->counter);
         }
-        printk("\n");
         schedule();
     }
     else {
         if (next) {
-            printk("switch to [PID = %d COUNTER = %d]\n", next->pid, next->counter);
+            printk("\nswitch to [PID = %d COUNTER = %d]\n", next->pid, next->counter);
             switch_to(next);
         }
     }
 }
 #endif
 
+#define DPRIORITY
 #ifdef DPRIORITY
 void schedule(void){
-
+    uint64 c, i, next;
+    struct task_struct** p;
+	while(1) {
+		c = 0;
+		next = 0;
+		i = NR_TASKS;
+		p = &task[NR_TASKS];
+		while(--i) {
+			if (!*--p) continue;
+			if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
+				c = (*p)->counter, next = i;
+		}
+        
+		if (c) break;
+        // else all counters are 0s
+        printk("\n");
+        for(p = &task[NR_TASKS-1]; p > &task[0]; --p) {
+            if (*p) {
+                (*p)->counter = ((*p)->counter >> 1) + (*p)->priority;
+                printk("SET [PID = %d PRIORITY = %d COUNTER = %d]\n", (*p)->pid, (*p)->priority, (*p)->counter);
+            }
+        }
+	}
+    
+    printk("\nswitch to [PID = %d PRIORITY = %d COUNTER = %d]\n", task[next]->pid, task[next]->priority, task[next]->counter);
+	switch_to(task[next]);
 }
 #endif
