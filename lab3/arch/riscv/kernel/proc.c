@@ -113,7 +113,6 @@ void schedule(void){
 }
 #endif
 
-#define DPRIORITY
 #ifdef DPRIORITY
 void schedule(void){
     uint64 c, i, next;
