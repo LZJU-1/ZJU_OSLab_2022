@@ -88,7 +88,6 @@ __dummy:
     la t0, dummy
     csrw sepc, t0
     sret
-    #jalr t0
 
     .globl __switch_to
 __switch_to:
