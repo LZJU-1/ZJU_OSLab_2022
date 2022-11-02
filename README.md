@@ -1,4 +1,4 @@
-# ZJU_OSLab_2022
+# ZJU OS labs 2022-fall
 My solution to Zhejiang University Operating System labs.
 
 **Only for communication purposes and plagiarism is strictly prohibited.**
