@@ -6,10 +6,10 @@ My solution to Zhejiang University Operating System labs.
 **The author is not responsible for any plagiaristic behaviour.**
 
 Current progress:
-- [x] Lab 0
-- [x] Lab 1
-- [x] Lab 2
-- [x] Lab 3
+- [x] Lab 0: learn qemu and compile kernel source code
+- [x] Lab 1: booting and basic system calls
+- [x] Lab 2: supervisor timer interrupt
+- [x] Lab 3: thread and context switch
 - [ ] Lab 4
 - [ ] Lab 5
 - [ ] Lab 6
