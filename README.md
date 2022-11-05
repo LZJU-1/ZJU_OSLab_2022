@@ -1,5 +1,5 @@
 # ZJU OS labs 2022-fall
-My solution to Zhejiang University Operating System labs.
+My solution to Zhejiang University Operating System labs. Labs documents can be found [here](https://zju-sec.github.io/os22fall-stu/).
 
 **Only for communication purposes and plagiarism is strictly prohibited.**
 
@@ -10,6 +10,6 @@ Current progress:
 - [x] Lab 1: booting and basic system calls
 - [x] Lab 2: supervisor timer interrupt
 - [x] Lab 3: thread and context switch
-- [ ] Lab 4
+- [ ] Lab 4: virtual memory management
 - [ ] Lab 5
 - [ ] Lab 6
