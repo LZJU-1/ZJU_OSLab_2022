@@ -2,6 +2,9 @@
     .section .text.init
     .globl _start
 _start:
+    jal ra, setup_vm # set up vitual memory
+    jal ra, relocate
+
     la sp, boot_stack_top # set the stack pointer
     
     jal ra, mm_init # initialize physical memory
@@ -26,6 +29,25 @@ _start:
     jal ra, clock_set_next_event
 
     jal x0, start_kernel  # jump to start_kernel
+
+relocate:
+    # set ra = ra + PA2VA_OFFSET
+    # set sp = sp + PA2VA_OFFSET (If you have set the sp before)
+
+    ###################### 
+    #   YOUR CODE HERE   #
+    ######################
+
+    # set satp with early_pgtbl
+
+    ###################### 
+    #   YOUR CODE HERE   #
+    ######################
+
+    # flush tlb
+    sfence.vma zero, zero
+
+    ret
 
     .section .bss.stack
     .globl boot_stack
