@@ -3,4 +3,4 @@
 
 void setup_vm(void);
 
-#endif _VM_H_
+#endif

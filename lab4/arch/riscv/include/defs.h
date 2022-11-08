@@ -17,9 +17,9 @@
 
 #define PA2VA_OFFSET (VM_START - PHY_START)
 
-#define INF 0xFFFFFFFFFFFFFFFF
+#include "../../../include/types.h"
 
-#include "types.h"
+#define INF 0xFFFFFFFFFFFFFFFF
 
 #define csr_read(csr)                       \
 ({                                          \
