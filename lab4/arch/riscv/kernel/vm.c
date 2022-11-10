@@ -4,9 +4,10 @@
 #include "vm.h"
 #include "mm.h"
 #include "string.h"
+#include "printk.h"
 
 /* early_pgtbl: 用于 setup_vm 进行 1GB 的 映射。 */
-uint64 early_pgtbl[512] __attribute__((__aligned__(0x1000)));
+unsigned long early_pgtbl[512] __attribute__((__aligned__(0x1000)));
 
 void setup_vm(void) {
     /* 
@@ -53,7 +54,6 @@ void setup_vm_final(void) {
     asm volatile("sfence.vma zero, zero");
     return;
 }
-
 
 /* 创建多级页表映射关系 */
 /*
