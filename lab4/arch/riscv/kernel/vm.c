@@ -35,19 +35,16 @@ void setup_vm_final(void) {
     memset(swapper_pg_dir, 0x0, PGSIZE);
 
     // No OpenSBI mapping required
-    
     // mapping kernel text X|-|R|V
-    create_mapping(swapper_pg_dir, &_stext, (uint64)(&_stext) - PA2VA_OFFSET, 1u, 5);
+    create_mapping(swapper_pg_dir, &_stext, (uint64)(&_stext) - PA2VA_OFFSET, 1U, 5);
 
     // mapping kernel rodata -|-|R|V
-    create_mapping(swapper_pg_dir, &(_srodata), (uint64)&(_srodata) - PA2VA_OFFSET, 1u, 1);
+    create_mapping(swapper_pg_dir, &_srodata, (uint64)(&_srodata) - PA2VA_OFFSET, 1U, 1);
 
     // mapping other memory -|W|R|V
-    // create_mapping(swapper_pg_dir, _sdata, _sdata - PA2VA_OFFSET, 32766u, 3);
-    create_mapping(swapper_pg_dir, &(_sdata), (uint64)&(_sdata) - PA2VA_OFFSET, 16384u, 3);
+    create_mapping(swapper_pg_dir, &_sdata, (uint64)(&_sdata) - PA2VA_OFFSET, 32766U, 3);
 
     // set satp with swapper_pg_dir
-
     __asm__ volatile("csrw satp, %[base]":: [base] "r" ((uint64)swapper_pg_dir):);
 
     // flush TLB
@@ -71,10 +68,6 @@ void create_mapping(uint64 *pgtbl, uint64 va, uint64 pa, uint64 sz, int perm) {
         uint64 vpn2 = ((va & 0x7fc0000000) >> 30);
         uint64 vpn1 = ((va & 0x3fe00000) >> 21);
         uint64 vpn0 = ((va & 0x1ff000) >> 12);
-        if (va == 0xffffe007ffb020) {
-            uint64 tmp = 0;
-            tmp += 1;
-        }
 
         // the second level page (next to root)
         uint64 *pgtbl1;
@@ -93,7 +86,6 @@ void create_mapping(uint64 *pgtbl, uint64 va, uint64 pa, uint64 sz, int perm) {
         else pgtbl0 = (uint64*)((pgtbl1[vpn1] & 0x3ffffffffffffc00) << 2);
 
         // the physical page
-        uint64 *physical_page;
         if (!(pgtbl0[vpn0] & 1)) {
             // note the perm only contains infomation about XWR (no V)
             pgtbl0[vpn0] |= (1 | (perm << 1) | (pa >> 2));
