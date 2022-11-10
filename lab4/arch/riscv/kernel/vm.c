@@ -68,10 +68,6 @@ void create_mapping(uint64 *pgtbl, uint64 va, uint64 pa, uint64 sz, int perm) {
         uint64 vpn2 = ((va & 0x7fc0000000) >> 30);
         uint64 vpn1 = ((va & 0x3fe00000) >> 21);
         uint64 vpn0 = ((va & 0x1ff000) >> 12);
-        if (va == 0xffffe007ffb020) {
-            uint64 tmp = 0;
-            tmp += 1;
-        }
 
         // the second level page (next to root)
         uint64 *pgtbl1;
