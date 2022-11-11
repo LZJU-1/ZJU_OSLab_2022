@@ -4,9 +4,10 @@
 #include "vm.h"
 #include "mm.h"
 #include "string.h"
+#include "printk.h"
 
 /* early_pgtbl: 用于 setup_vm 进行 1GB 的 映射。 */
-uint64 early_pgtbl[512] __attribute__((__aligned__(0x1000)));
+unsigned long early_pgtbl[512] __attribute__((__aligned__(0x1000)));
 
 void setup_vm(void) {
     /* 
@@ -21,10 +22,11 @@ void setup_vm(void) {
     early_pgtbl[2] = (uint64)(0 | 0x20000000U | 15U);
     // virtual address = 0xffffffe000000000 => VPN[2] = 384
     early_pgtbl[384] = (uint64)(0 | 0x20000000U | 15U);
+    printk("...setup_vm done!\n");
 }
 
 /* swapper_pg_dir: kernel pagetable 根目录， 在 setup_vm_final 进行映射。 */
-unsigned long  swapper_pg_dir[512] __attribute__((__aligned__(0x1000)));
+unsigned long swapper_pg_dir[512] __attribute__((__aligned__(0x1000)));
 
 extern uint64 _stext;
 extern uint64 _srodata;
@@ -35,22 +37,22 @@ void setup_vm_final(void) {
 
     // No OpenSBI mapping required
     // mapping kernel text X|-|R|V
-    create_mapping(swapper_pg_dir, &_stext, (uint64)(&_stext) - PA2VA_OFFSET, 1U, 5);
+    create_mapping((uint64*)swapper_pg_dir, (uint64)&_stext, (uint64)(&_stext) - PA2VA_OFFSET, 2U, 5);
 
     // mapping kernel rodata -|-|R|V
-    create_mapping(swapper_pg_dir, &_srodata, (uint64)(&_srodata) - PA2VA_OFFSET, 1U, 1);
+    create_mapping((uint64*)swapper_pg_dir, (uint64)&_srodata, (uint64)(&_srodata) - PA2VA_OFFSET, 1U, 1);
 
     // mapping other memory -|W|R|V
-    create_mapping(swapper_pg_dir, &_sdata, (uint64)(&_sdata) - PA2VA_OFFSET, 32766U, 3);
+    create_mapping((uint64*)swapper_pg_dir, (uint64)&_sdata, (uint64)(&_sdata) - PA2VA_OFFSET, 32766U, 3);
 
     // set satp with swapper_pg_dir
     __asm__ volatile("csrw satp, %[base]":: [base] "r" ((uint64)swapper_pg_dir):);
 
     // flush TLB
     asm volatile("sfence.vma zero, zero");
+    printk("...setup_vm_final done!\n");
     return;
 }
-
 
 /* 创建多级页表映射关系 */
 /*
